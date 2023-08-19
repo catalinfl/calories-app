@@ -29,8 +29,8 @@ const Hero = () => {
 
   return (
     <div className="hero max-w-[1280px] flex flex-col bg-primary mt-4 mx-auto p-5 rounded-lg justify-center">
-        <div className="presentation flex my-4 px-8 py-16 font-['InterThin'] rounded-lg w-[1200px] bg-base-100 sm:flex-row flex-col">
-          <div className="leftPart flex flex-col w-[50%]"> 
+        <div className="presentation flex my-4 px-8 py-16 rounded-lg max-w-[1200px] bg-base-100 sm:flex-row flex-col">
+          <div className="leftPart flex flex-col sm:w-[50%] w-[100%]"> 
           <p className="text-5xl"> <span className="font-bold bg-gradient-to-r from-lime-500 to-purple-600 bg-clip-text text-transparent"> Calculate </span> your <span className="font-bold bg-gradient-to-r from-purple-600 to-lime-500 bg-clip-text text-transparent"> calories </span> </p>
           <p className="text-5xl mt-3" > Lose a few kilos. </p>
             <div className="flex flex-col justify-center items-center h-[50%]"> 
@@ -43,7 +43,7 @@ const Hero = () => {
               </div>
             </div>
           </div>
-          <div className="rightPart flex flex-col w-[50%] h-[50%] border border-purple-500 rounded-lg justify-center items-center">
+          <div className="rightPart flex flex-col sm:w-[50%] sm:justify-center sm:mt-0 mt-16 w-[100%] border border-purple-500 rounded-lg justify-center items-center">
             <img src={randomPhoto() as string} className="photo p-3 flex justify-center" />
           </div>
         </div>

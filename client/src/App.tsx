@@ -8,11 +8,11 @@ import Navbar from './components/Navbar'
 function App() {
 
   return (
-    <div className="bg-black mx-auto max-w-[1280px]">
+    <> 
       <Navbar />
       <Hero />
       <Footer />
-    </div> 
+    </>
   )
 }
 

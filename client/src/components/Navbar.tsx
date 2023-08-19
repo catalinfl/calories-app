@@ -17,8 +17,8 @@ const Navbar = () => {
             <button className="btn rounded-none join-item"> Make a list </button>
             <button className="btn rounded-none join-item"> Contact </button>
             </div>
-            <div className="hamburger flex sm:hidden w-[100%] justify-end">
-                <RxHamburgerMenu className="w-8 h-8" />
+            <div className="hamburger flex sm:hidden w-[100%] p-2 justify-end">
+                <RxHamburgerMenu className="p-2 w-[2.5rem] h-[2.5rem] text-lg cursor-pointer  text-lime-500 bg-purple-700" />
             </div>
         </nav>
     )

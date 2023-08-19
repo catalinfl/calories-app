@@ -35,7 +35,7 @@ const Info = () => {
 
   return (
 <div className="info mr-3 w-[100%] flex justify-center"> 
-        <div className="stats shadow">
+        <div className="stats stats-vertical sm:stats-horizontal shadow">
         <div className="stat">
             <div className="stat-figure text-lime-300">
             <IoFastFoodOutline className="inline-block w-8 h-8 stroke-current" />
