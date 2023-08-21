@@ -1,5 +1,6 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react"
 import { BiErrorAlt } from "react-icons/bi"
+import { TbMeat } from "react-icons/tb"
 
 type CalcProps = {
     age: number,
@@ -12,11 +13,13 @@ type CalcProps = {
 type Gender = "male" | "female" | undefined
 type AllPropsDefined<T> = keyof T extends never ? never : T
 type Error = string | null
-type ActivityLevel = "Sedentary" | "Lightly Active" | "Moderately Active" | "Active" | "VeryActive"
+type ActivityLevel = "Sedentary" | "Lightly active" | "Moderately active" | "Active" | "Very active"
 
 const Calc = () => {
 
     const buttonRef = useRef<HTMLDivElement | null>(null)
+    const calculateRef = useRef<HTMLDivElement | null>(null)
+
 
     const [toCalculate, setCalculate]  = useState<CalcProps>({
         age: undefined,
@@ -27,6 +30,8 @@ const Calc = () => {
     })
 
     const [error, setError] = useState<Error>(null);
+    const [showCalculate, setShowCalculate] = useState<boolean>(false)
+    const [calories, setCalories] = useState<number>(0)
 
     const handleChange = (calculate: keyof CalcProps, e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         if ((calculate === "age" && e.target.value.length <= 2) || ((calculate === "weight" || calculate === "height") && e.target.value.length <= 3)) {
@@ -40,7 +45,7 @@ const Calc = () => {
             setCalculate({...toCalculate, activity: e.target.value as ActivityLevel })
         }
         else {
-                setError("Put a valid value")
+            setError("Put a valid value")
         }        
     }
 
@@ -51,7 +56,13 @@ const Calc = () => {
     const handleSubmit = () => {
         const t = allPropsDefined(toCalculate) 
         if (t) {
-            console.log(calculateFormula(toCalculate))
+            const calculatedCalories = calculateFormula(toCalculate)
+            if (typeof(calculatedCalories) === "number") {
+                setCalories(Math.floor(calculatedCalories/10)*10)
+            }            
+        }
+        else {
+            setError("Fill all the fields")
         }
     }
 
@@ -59,29 +70,45 @@ const Calc = () => {
         switch (activity) {
             case "Sedentary":
                 return 1.2
-            case "Lightly Active":
+            case "Lightly active":
                 return 1.375
-            case "Moderately Active":
+            case "Moderately active":
                 return 1.55
             case "Active":
                 return 1.725
-            case "VeryActive":
+            case "Very active":
                 return 1.9
         }
     }
 
     const calculateFormula = (props: CalcProps): number => {
-        const activityCoefficient = getCoefficient(props.activity)
+        if (props.age > 99 || props.age < 10) {
+            setError("Age must be between 10 and 99")
+            return
+        }
+        if (props.weight > 200 || props.weight < 40) {
+            setError("Weight must be between 40 and 200")
+            return
+        }
+        if (props.height > 210 || props.height < 140) {
+            setError("Height must be between 140 and 210")
+            return
+        }
 
+        const activityCoefficient = getCoefficient(props.activity)
+        setShowCalculate(true)
         if (props.gender === "male") {
             return (props.weight * 10 + props.height * 6.25 - props.age * 5 + 5) * activityCoefficient
         }
         else {
             return (props.weight * 10 + props.height * 6.25 - props.age * 5 - 161) * activityCoefficient
-        }
+        }        
     }
 
-    console.log(toCalculate)
+    useEffect(() => {
+        calculateRef.current?.scrollTo()
+        calculateRef.current?.scrollIntoView({behavior: "smooth"})    
+    }, [showCalculate])
 
     
     useEffect(() => {
@@ -113,6 +140,7 @@ const Calc = () => {
 
   
     return (
+        <>
     <div className="flex flex-col justify-center max-w-[1280px] rounded-lg bg-black p-12 mx-auto mt-12"> 
         <div className="table flex flex-col max-w-[1200px] mx-auto"> 
             <div className="display flex w-full">
@@ -179,6 +207,38 @@ const Calc = () => {
             </div>
         </div>
     </div>
+  { showCalculate &&  
+    <div ref={calculateRef} className="mt-4 bg-black flex flex-col justify-center max-w-[1280px] mx-auto rounded-lg p-4">        
+        <div> 
+        <p className="text-center text-[2rem] flex flex-row justify-center items-center"> You need  <TbMeat className="text-[3rem] mr-2 ml-2 text-orange-800"/> {calories} calories daily &#128522; </p>
+        </div>
+        <div className="flex flex-col gap-2 justify-center items-center">
+            <div className="bg-base-100 flex flex-row mt-4 text-center w-full max-w-[720px] rounded-lg"> 
+                <div className="flex flex-1 justify-center items-center p-4 text-lg transition-all hover:bg-lime-500 hover:text-slate-700"> Mild weight loss </div>
+                <div className="flex flex-1 flex-col justify-center items-center p-4 text-lg transition-all hover:bg-purple-500 hover:text-slate-700"> <span className="flex flex-row items-center gap-1"> {calories-250} calories <TbMeat className="text-[2rem] text-orange-800"/> </span>
+                    <p className="text-sm"> -0.25kg/week </p>
+                 </div>
+             </div>
+             <div className="bg-base-100 flex flex-row text-center w-full max-w-[720px] rounded-lg"> 
+                <div className="flex flex-1 justify-center items-center p-4 text-lg transition-all hover:bg-lime-500 hover:text-slate-700"> Weight loss </div>
+                <div className="flex flex-1 flex-col justify-center items-center p-4 text-lg transition-all hover:bg-purple-500 hover:text-slate-700"> <span className="flex flex-row items-center gap-1"> {calories-500} calories <TbMeat className="text-[2rem] text-orange-800"/> </span>
+                    <p className="text-sm"> -0.50kg/week </p>
+                 </div>
+             </div>
+             <div className="bg-base-100 flex flex-row text-center w-full max-w-[720px] rounded-lg"> 
+                <div className="flex flex-1 justify-center items-center p-4 text-lg transition-all hover:bg-lime-500 hover:text-slate-700"> Extreme weight loss </div>
+                <div className="flex flex-1 flex-col justify-center items-center p-4 text-lg transition-all hover:bg-purple-500 hover:text-slate-700"> <span className="flex flex-row items-center gap-1"> {calories-1000} calories <TbMeat className="text-[2rem] text-orange-800"/> </span>
+                    <p className="text-sm"> -0.50kg/week </p>
+                 </div>
+             </div>
+        </div>
+        <div className="flex flex-col justify-center items-center"> 
+        <p className="text-center mt-4 text-lg"> You need {calories} calories daily to maintain your weight. If you want to lose weight consider going under this number of calories. </p>
+        <button className="btn btn-base-100 w-full max-w-[280px] flex mt-4"> see programs </button>
+        </div>
+    </div>
+  }
+    </>
   )
 }
 
