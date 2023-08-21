@@ -28,7 +28,7 @@ const Hero = () => {
   }, [])
 
   return (
-    <div className="hero max-w-[1280px] flex flex-col bg-primary mt-4 mx-auto p-5 rounded-lg justify-center">
+    <div className="hero max-w-[1280px] flex flex-col bg-primary mt-12 mx-auto p-5 rounded-lg justify-center">
         <div className="presentation flex my-4 px-8 py-16 rounded-lg max-w-[1200px] bg-base-100 sm:flex-row flex-col">
           <div className="leftPart flex flex-col sm:w-[50%] w-[100%]"> 
           <p className="text-5xl"> <span className="font-bold bg-gradient-to-r from-lime-500 to-purple-600 bg-clip-text text-transparent"> Calculate </span> your <span className="font-bold bg-gradient-to-r from-purple-600 to-lime-500 bg-clip-text text-transparent"> calories </span> </p>
