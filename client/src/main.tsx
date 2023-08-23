@@ -8,6 +8,7 @@ import About from './pages/About.tsx'
 import Login from './pages/Login.tsx'
 import Register from './pages/Register.tsx'
 import Calculator from './pages/Calculator.tsx'
+import Lists from './pages/Lists.tsx'
 
 const router = createBrowserRouter([
   {
@@ -19,16 +20,20 @@ const router = createBrowserRouter([
     element: <About />
   },
   {
+    path: '/lists',
+    element: <Lists />
+  },
+  {
+    path: '/calculator',
+    element: <Calculator />
+  },
+  {
     path: '/login',
     element: <Login />
   },
   {
     path: '/register',
     element: <Register />,
-  },
-  {
-    path: '/calculator',
-    element: <Calculator />
   }
 ])
 

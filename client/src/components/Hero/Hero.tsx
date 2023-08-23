@@ -5,6 +5,7 @@ import Photo3 from "../../assets/photos/photo3.jpg"
 import Brocolli from '../../assets/photos/broccoli.png'
 import Milk from '../../assets/photos/milk.png'
 import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 const Hero = () => {
 
@@ -39,7 +40,9 @@ const Hero = () => {
                 <img src={Milk} className="w-32" />
               </div>
               <div> 
+              <Link to="/about"> 
               <button className="btn bg-lime-400 text-purple-600 font-bold mt-5 w-64 h-16"> Get started </button>
+              </Link>
               </div>
             </div>
           </div>

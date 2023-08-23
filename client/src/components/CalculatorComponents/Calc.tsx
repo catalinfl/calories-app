@@ -10,7 +10,7 @@ type CalcProps = {
     activity: ActivityLevel
 } 
 
-type Gender = "male" | "female" | undefined
+type Gender = "male" | "female"
 type AllPropsDefined<T> = keyof T extends never ? never : T
 type Error = string | null
 type ActivityLevel = "Sedentary" | "Lightly active" | "Moderately active" | "Active" | "Very active"
@@ -210,7 +210,7 @@ const Calc = () => {
   { showCalculate &&  
     <div ref={calculateRef} className="mt-4 bg-black flex flex-col justify-center max-w-[1280px] mx-auto rounded-lg p-4">        
         <div> 
-        <p className="text-center text-[2rem] flex flex-row justify-center items-center"> You need  <TbMeat className="text-[3rem] mr-2 ml-2 text-orange-800"/> {calories} calories daily &#128522; </p>
+        <p className="text-center text-[1.5rem] sm:text-[2rem] flex flex-row justify-center items-center"> You need  <TbMeat className="text-[2rem] sm:text-[3rem] mr-1 ml-1 sm:mr-2 sm:ml-2 text-orange-800"/> {calories} calories daily &#128522; </p>
         </div>
         <div className="flex flex-col gap-2 justify-center items-center">
             <div className="bg-base-100 flex flex-row mt-4 text-center w-full max-w-[720px] rounded-lg"> 
@@ -228,12 +228,13 @@ const Calc = () => {
              <div className="bg-base-100 flex flex-row text-center w-full max-w-[720px] rounded-lg"> 
                 <div className="flex flex-1 justify-center items-center p-4 text-lg transition-all hover:bg-lime-500 hover:text-slate-700"> Extreme weight loss </div>
                 <div className="flex flex-1 flex-col justify-center items-center p-4 text-lg transition-all hover:bg-purple-500 hover:text-slate-700"> <span className="flex flex-row items-center gap-1"> {calories-1000} calories <TbMeat className="text-[2rem] text-orange-800"/> </span>
-                    <p className="text-sm"> -0.50kg/week </p>
+                    <p className="text-sm"> -1.00kg/week </p>
                  </div>
              </div>
         </div>
         <div className="flex flex-col justify-center items-center"> 
         <p className="text-center mt-4 text-lg"> You need {calories} calories daily to maintain your weight. If you want to lose weight consider going under this number of calories. </p>
+        <p className="text-center mt-4 text-lg"> Log-in to make a list of meals for a day </p>
         <button className="btn btn-base-100 w-full max-w-[280px] flex mt-4"> see programs </button>
         </div>
     </div>

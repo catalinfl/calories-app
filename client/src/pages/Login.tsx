@@ -1,7 +1,14 @@
+import Footer from "../components/Footer"
+import LoginPanel from "../components/LoginPanel"
+import Navbar from "../components/Navbar"
 
 const Login = () => {
   return (
-    <div>Login</div>
+    <> 
+    <Navbar />
+    <LoginPanel />
+    <Footer absolute={true}/>
+    </>
   )
 }
 

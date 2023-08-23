@@ -7,7 +7,7 @@ const Calculator = () => {
     <>
       <Navbar />
       <Calc />
-      <Footer />
+      <Footer absolute={false}/>
     </>
   )
 }
