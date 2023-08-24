@@ -4,7 +4,7 @@ import { RxHamburgerMenu } from "react-icons/rx"
 
 const Navbar = () => {    
     return (
-        <nav className="navbar flex flex-row bg-primary mt-2 max-w-[720px] mx-auto gap-2 border-lime-300 border-b-[1px] justify-center"> 
+        <nav className="navbar flex flex-row bg-primary md:sticky top-[0.5rem] mt-2 max-w-[720px] mx-auto gap-2 border-lime-300 border-b-[1px] justify-center"> 
             <div className="flex w-full"> 
             <Link to="/"> <p className="mx-5 cursor-pointer"> CaloriesCalc</p> </Link>
             </div>

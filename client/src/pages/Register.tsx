@@ -1,10 +1,13 @@
+import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
+import RegisterPanel from "../components/RegisterPanel"
 
 const Register = () => {
   return (
     <>
     <Navbar />
-    <p> Register </p> 
+    <RegisterPanel />
+    <Footer absolute={true} />
     </>
   )
 }
