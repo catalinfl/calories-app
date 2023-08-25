@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import axios from "axios"
+import { useDispatch } from "react-redux"
+import { login } from "../redux/slices/authSlice"
 
 type LoginType = {
-    nickname: string,
+    username: string,
     password: string
 }
 
@@ -10,33 +13,47 @@ type Error = string | null
 
 const LoginPanel = () => {
 
-    const [data, setData] = useState<LoginType>({nickname: "", password: ""})
+    const [data, setData] = useState<LoginType>({username: "", password: ""})
     const [error, setError] = useState<Error>(null)
-    
+
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
     const onChangeFunc = (type: keyof LoginType, e: React.ChangeEvent<HTMLInputElement>) => {
         setData({...data, [type]: e.target.value})
     }
 
     const handleSubmit = () => {
-        console.log(data)
+      axios.post("http://localhost:3000/api/login", data, {
+        headers: {
+            "Content-Type": "application/json"
+        },
+        withCredentials: true
+      }).then(res => {
+        dispatch(login({...res.data, loggedIn: true }))
+        navigate("/")
+      })
     }
 
-    const nicknameRef = useRef<HTMLInputElement>(null)
+    const usernameRef = useRef<HTMLInputElement>(null)
     const passRef = useRef<HTMLInputElement>(null)
 
+
+
     useEffect(() => {
-        if (nicknameRef.current || passRef.current) {
-            console.log(nicknameRef.current.value.length)
-            if (nicknameRef.current.value.length > 20) {
-                setError("Nickname or password too long!")
-                nicknameRef.current.value = ""
+        if (usernameRef.current || passRef.current) {
+            if (usernameRef.current.value.length > 20) {
+                setError("Username or password too long!")
+                usernameRef.current.value = ""
             } 
             if (passRef.current.value.length > 20) {
-                setError("Nickname or password too long!")
+                setError("Username or password too long!")
                 passRef.current.value = ""
             }
         }
     }, [data])
+
+
 
   return (
     <div className="bg-black w-full max-w-[1280px] h-full flex flex-col md:flex-row mx-auto mt-[3rem] gap-4 md:gap-0"> 
@@ -46,9 +63,9 @@ const LoginPanel = () => {
           </div>
           <div className="flex flex-col"> 
           <label className="label">
-            <span className="label-text"> Nickname </span>
+            <span className="label-text"> Username </span>
           </label>
-          <input ref={nicknameRef} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeFunc("nickname", e)} placeholder="Nickname" className="input input-bordered w-full max-w-xs" />
+          <input ref={usernameRef} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeFunc("username", e)} placeholder="Username" className="input input-bordered w-full max-w-xs" />
           </div>
           <div className="flex flex-col"> 
           <label className="label">

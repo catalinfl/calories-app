@@ -1,8 +1,11 @@
+import axios from "axios"
 import { useEffect, useRef, useState } from "react"
-import { Link } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { Link, useNavigate } from "react-router-dom"
+import { login } from "../redux/slices/authSlice"
 
 type RegisterType = {
-    nickname: string,
+    username: string,
     password: string,
     confirmPass: string
 }
@@ -13,9 +16,11 @@ type Error = string | null
 
 const RegisterPanel = () => {
 
-    const [data, setData] = useState<RegisterType>({nickname: "", password: "", confirmPass: ""})
+    const [data, setData] = useState<RegisterType>({username: "", password: "", confirmPass: ""})
     const [error, setError] = useState<Error>(null)
     const [dataToSend, setDataToSend] = useState<SendDataType | null>(null)
+
+    const navigate = useNavigate()
     
     const onChangeFunc = (type: keyof RegisterType, e: React.ChangeEvent<HTMLInputElement>) => {
         setData({...data, [type]: e.target.value})
@@ -26,24 +31,26 @@ const RegisterPanel = () => {
             setError("Passwords don't match!")
             return
         }
-        setDataToSend({nickname: data.nickname, password: data.password})
+        setDataToSend({username: data.username, password: data.password})
     }
+    const dispatch = useDispatch()
 
 
 
-    const nicknameRef = useRef<HTMLInputElement>(null)
+
+    const usernameRef = useRef<HTMLInputElement>(null)
     const passRef = useRef<HTMLInputElement>(null)
     const confirmPassRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
-        if (nicknameRef.current || passRef.current) {
-            console.log(nicknameRef.current.value.length)
-            if (nicknameRef.current.value.length > 20) {
-                setError("Nickname or password too long!")
-                nicknameRef.current.value = ""
+        if (usernameRef.current || passRef.current) {
+            console.log(usernameRef.current.value.length)
+            if (usernameRef.current.value.length > 20) {
+                setError("Username or password too long!")
+                usernameRef.current.value = ""
             } 
             if (passRef.current.value.length > 20) {
-                setError("Nickname or password too long!")
+                setError("Username or password too long!")
                 passRef.current.value = ""
             }
         }
@@ -53,6 +60,23 @@ const RegisterPanel = () => {
         // else { setError("works") }
     }, [data])
 
+    useEffect(() => {
+        if (dataToSend) {
+          axios.post("http://localhost:3000/api/register", dataToSend, {
+            withCredentials: true
+          })
+          .then((res) => {
+              console.log(res.data)
+              dispatch(login({...res.data, loggedIn: true }))
+              navigate("/about")
+          })
+          .catch(err => {
+              console.error(err);
+          });
+        }
+      }, [dataToSend, navigate, dispatch]); 
+
+
   return (
     <div className="bg-black w-full max-w-[1280px] h-full flex flex-col md:flex-row mx-auto mt-[3rem] gap-4 sm:gap-0"> 
       <div className="flex flex-col flex-1 items-center justify-center gap-4 p-[3rem]"> 
@@ -61,9 +85,9 @@ const RegisterPanel = () => {
           </div>
           <div className="flex flex-col"> 
           <label className="label">
-            <span className="label-text"> Nickname </span>
+            <span className="label-text"> Username </span>
           </label>
-          <input ref={nicknameRef} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeFunc("nickname", e)} placeholder="Nickname" className="input input-bordered w-full max-w-xs" />
+          <input ref={usernameRef} type="text" onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeFunc("username", e)} placeholder="Username" className="input input-bordered w-full max-w-xs" />
           </div>
           <div className="flex flex-col"> 
           <label className="label">

@@ -1,6 +1,10 @@
+import axios from "axios"
 import { ChangeEvent, useEffect, useRef, useState } from "react"
 import { BiErrorAlt } from "react-icons/bi"
 import { TbMeat } from "react-icons/tb"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "../../redux/store"
+import { login } from "../../redux/slices/authSlice"
 
 type CalcProps = {
     age: number,
@@ -19,8 +23,14 @@ const Calc = () => {
 
     const buttonRef = useRef<HTMLDivElement | null>(null)
     const calculateRef = useRef<HTMLDivElement | null>(null)
+    
+    const authSelector = useSelector((state: RootState) => state.authSlice)
+    
+    const info = authSelector
 
-
+    console.log(info)
+    
+    
     const [toCalculate, setCalculate]  = useState<CalcProps>({
         age: undefined,
         weight: undefined,
@@ -104,6 +114,17 @@ const Calc = () => {
             return (props.weight * 10 + props.height * 6.25 - props.age * 5 - 161) * activityCoefficient
         }        
     }
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        if (showCalculate && info.loggedIn) {
+            axios.put("http://localhost:3000/api/lists", { calories: calories, username: info.username })
+            .then(() => {
+                dispatch(login({...info, calories: calories}))
+            })
+        }
+    }, [showCalculate, calories, info, dispatch])
 
     useEffect(() => {
         calculateRef.current?.scrollTo()

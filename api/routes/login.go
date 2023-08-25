@@ -21,14 +21,8 @@ func Login(api *fiber.App) {
 
 	router.Post("/", func(c *fiber.Ctx) error {
 
-		err := handlers.VerifyJWTToken(c)
-
-		if err == nil {
-			return c.Status(401).JSON(fiber.Map{"error": "already logged in"})
-		}
-
 		var creds Credentials
-		err = c.BodyParser(&creds)
+		err := c.BodyParser(&creds)
 
 		if err != nil {
 			return c.Status(400).JSON(fiber.Map{"error": "invalid body request"})
@@ -66,13 +60,14 @@ func Login(api *fiber.App) {
 
 		c.Cookie(&fiber.Cookie{
 			Name:     "jwt",
-			Value:    "Bearer" + token,
+			Value:    "Bearer " + token,
 			Expires:  time.Unix(exp, 0),
 			HTTPOnly: true,
 		})
 
 		return c.Status(200).JSON(fiber.Map{
-			"message": "success",
+			"username": creds.Username,
+			"calories": user["personcalories"],
 		})
 	})
 

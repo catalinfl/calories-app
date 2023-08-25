@@ -1,4 +1,4 @@
 api/.env
 client/.env
-client/node_modules
+# client/node_modules
 api/tmp

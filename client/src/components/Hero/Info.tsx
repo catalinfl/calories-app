@@ -10,26 +10,27 @@ const Info = () => {
     const countRef = useRef<HTMLDivElement | null>(null)
     const countRef2 = useRef<HTMLDivElement | null>(null)
     const countRef3 = useRef<HTMLDivElement | null>(null)
-
+    console.log(location.pathname)
 
     const setPlus = (nb: React.MutableRefObject<HTMLDivElement>) => {
-        switch(nb) {
+        if (location.pathname === "/") {
+            switch(nb) {
             case countRef:
-                if (!countRef.current.innerText.includes('+')) {
-                    countRef.current.innerText = countRef.current.innerText + "+";
+                if (!countRef.current?.innerText.includes('+')) {
+                    countRef.current.innerText = countRef.current?.innerText + "+";
                 }
                 break;
             case countRef2:
-                if (!countRef2.current.innerText.includes('+')) {
-                    countRef2.current.innerText = countRef2.current.innerText + "+";
+                if (!countRef2.current?.innerText.includes('+')) {
+                    countRef2.current.innerText = countRef2.current?.innerText + "+";
                 }
                 break;
             case countRef3:
-                if (!countRef3.current.innerText.includes('+')) {
-                    countRef3.current.innerText = countRef3.current.innerText + "+";
+                if (!countRef3.current?.innerText.includes('+')) {
+                    countRef3.current.innerText = countRef3.current?.innerText + "+";
                 }
                 break;
-        }
+        }}
     }
 
 

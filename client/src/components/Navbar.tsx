@@ -1,10 +1,22 @@
 import { Link } from "react-router-dom"
 
 import { RxHamburgerMenu } from "react-icons/rx"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "../redux/store"
+import { logoff } from "../redux/slices/authSlice"
 
 const Navbar = () => {    
+
+    const authSelector = useSelector((state: RootState) => state.authSlice)
+
+    const dispatch = useDispatch()
+
+    const logOff = () => {
+        dispatch(logoff())
+    }
+
     return (
-        <nav className="navbar flex flex-row bg-primary md:sticky top-[0.5rem] mt-2 max-w-[720px] mx-auto gap-2 border-lime-300 border-b-[1px] justify-center"> 
+        <nav className="navbar flex flex-row z-10 bg-primary md:sticky top-[0.5rem] mt-2 max-w-[720px] mx-auto gap-2 border-lime-300 border-b-[1px] justify-center"> 
             <div className="flex w-full"> 
             <Link to="/"> <p className="mx-5 cursor-pointer"> CaloriesCalc</p> </Link>
             </div>
@@ -22,7 +34,7 @@ const Navbar = () => {
             <button className="btn rounded-none join-item"> About </button>
             </Link>
             <Link to="/login"> 
-            <button className="btn rounded-none join-item"> Login </button>
+            <button className="btn rounded-none join-item" onClick={() => logOff()}> {authSelector.loggedIn ? "Logout" : "Login"} </button>
             </Link>
             </div>
             <div className="dropdown dropdown-end block sm:hidden">
@@ -32,7 +44,7 @@ const Navbar = () => {
                     <Link to="/calculator"> <li className="cursor-pointer hover:bg-purple-800 transition-all px-4"> Calculator </li> </Link>
                     <Link to="/lists"> <li className="cursor-pointer hover:bg-purple-800 transition-all px-4"> Lists </li> </Link>
                     <Link to="/about"> <li className="cursor-pointer hover:bg-purple-800 transition-all px-4"> About </li> </Link>
-                    <Link to="/login"> <li className="cursor-pointer hover:bg-purple-800 transition-all px-4"> Login </li> </Link>
+                    <Link to="/login"> <li className="cursor-pointer hover:bg-purple-800 transition-all px-4" onClick={() => logOff()}> {authSelector.loggedIn ? "Log off" : "Login"} </li> </Link>
                 </ul>
             </div>
         </nav>

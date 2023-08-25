@@ -18,7 +18,7 @@ func main() {
 
 	app.Use(cors.New(cors.Config{
 		AllowCredentials: true,
-		AllowOrigins:     "*",
+		AllowOrigins:     "http://localhost:5173",
 	}))
 
 	err := godotenv.Load()
@@ -35,6 +35,7 @@ func main() {
 
 	routes.Register(app)
 	routes.Login(app)
+	routes.Lists(app)
 
 	app.Listen(":3000")
 
