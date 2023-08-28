@@ -3,3 +3,4 @@ client/.env
 # client/node_modules
 api/tmp
 api/products.json
+products.json

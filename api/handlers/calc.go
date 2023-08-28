@@ -73,7 +73,9 @@ func GetFoodsBySearch(c *fiber.Ctx) error {
 	}
 
 	for _, product := range prod {
-		if strings.Contains(strings.ToLower(product.Name), strings.ToLower(name)) {
+		if strings.Contains(strings.ToLower(product.Name), strings.ToLower(name)) && len(strings.Split(product.Name, " ")) == 1 {
+			results = append(results, product)
+		} else if strings.Contains(strings.ToLower(product.Name), strings.ToLower(name)) {
 			results = append(results, product)
 		}
 	}
