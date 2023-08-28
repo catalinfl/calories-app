@@ -68,6 +68,7 @@ func Login(api *fiber.App) {
 		return c.Status(200).JSON(fiber.Map{
 			"username": creds.Username,
 			"calories": user["personcalories"],
+			"exp":      exp,
 		})
 	})
 

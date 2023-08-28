@@ -107,6 +107,7 @@ func Register(api *fiber.App) {
 		return c.Status(200).JSON(fiber.Map{
 			"username": req.Username,
 			"calories": 0,
+			"exp": exp,
 		})
 	})
 

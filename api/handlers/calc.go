@@ -1,12 +1,25 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
+	"strings"
 
 	"github.com/catalinfl/calories-app/database"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 )
+
+type Food struct {
+	Name string `json:"name"`
+}
+
+type Product struct {
+	Name     string `json:"name"`
+	Calories string `json:"calories"`
+	Quantity string `json:"quantity"`
+}
 
 type Calories struct {
 	Username string `json:"username"`
@@ -47,4 +60,60 @@ func CalculateCalories(c *fiber.Ctx) error {
 	}
 
 	return c.Status(200).JSON(fiber.Map{"message": fmt.Sprintf("Calories updated to %d", req.Calories)})
+}
+
+func GetFoodsBySearch(c *fiber.Ctx) error {
+	var name string = c.Params("name")
+	prod := GetJSONFood()
+
+	var results []Product
+
+	if len(name) < 3 {
+		return c.Status(400).JSON(fiber.Map{"error": "name must be at least 3 characters long"})
+	}
+
+	for _, product := range prod {
+		if strings.Contains(strings.ToLower(product.Name), strings.ToLower(name)) {
+			results = append(results, product)
+		}
+	}
+
+	jsonData, err := json.Marshal(results)
+	fmt.Println(results)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to marshal products data"})
+	}
+
+	return c.Status(200).Type("json").Send(jsonData)
+}
+
+func GetJSONFood() []Product {
+	file, err := os.Open("products.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer file.Close()
+
+	data := make([]byte, 0)
+	buf := make([]byte, 1024)
+
+	for {
+		n, err := file.Read(buf)
+		if err != nil {
+			fmt.Println(err)
+			break
+		}
+		if n == 0 {
+			break
+		}
+		data = append(data, buf[:n]...)
+	}
+
+	var products []Product
+
+	if err := json.Unmarshal(data, &products); err != nil {
+		fmt.Println(err)
+	}
+
+	return products
 }

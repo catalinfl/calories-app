@@ -4,12 +4,20 @@ import { RxHamburgerMenu } from "react-icons/rx"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../redux/store"
 import { logoff } from "../redux/slices/authSlice"
+import { useEffect } from "react"
 
 const Navbar = () => {    
 
     const authSelector = useSelector((state: RootState) => state.authSlice)
-
     const dispatch = useDispatch()
+    const expirationDate = new Date(authSelector.exp * 1000)
+
+
+    useEffect(() => {
+        if (new Date() > expirationDate) {
+            dispatch(logoff())
+        }
+    }, [])
 
     const logOff = () => {
         dispatch(logoff())
