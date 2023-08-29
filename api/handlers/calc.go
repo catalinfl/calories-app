@@ -15,19 +15,19 @@ type Food struct {
 	Name string `json:"name"`
 }
 
-type Product struct {
+type ProductAPI struct {
 	Name     string `json:"name"`
 	Calories string `json:"calories"`
 	Quantity string `json:"quantity"`
 }
 
-type Calories struct {
+type CaloriesRequest struct {
 	Username string `json:"username"`
 	Calories int32  `json:"calories"`
 }
 
 func CalculateCalories(c *fiber.Ctx) error {
-	req := new(Calories)
+	req := new(CaloriesRequest)
 
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "cannot parse JSON"})
@@ -66,7 +66,7 @@ func GetFoodsBySearch(c *fiber.Ctx) error {
 	var name string = c.Params("name")
 	prod := GetJSONFood()
 
-	var results []Product
+	var results []ProductAPI
 
 	if len(name) < 3 {
 		return c.Status(400).JSON(fiber.Map{"error": "name must be at least 3 characters long"})
@@ -89,7 +89,7 @@ func GetFoodsBySearch(c *fiber.Ctx) error {
 	return c.Status(200).Type("json").Send(jsonData)
 }
 
-func GetJSONFood() []Product {
+func GetJSONFood() []ProductAPI {
 	file, err := os.Open("products.json")
 	if err != nil {
 		fmt.Println(err)
@@ -111,7 +111,7 @@ func GetJSONFood() []Product {
 		data = append(data, buf[:n]...)
 	}
 
-	var products []Product
+	var products []ProductAPI
 
 	if err := json.Unmarshal(data, &products); err != nil {
 		fmt.Println(err)

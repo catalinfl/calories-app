@@ -7,7 +7,7 @@ const Footer = ({ absolute }: { absolute: boolean }) => {
       document.querySelector('footer')?.classList.add('md:absolute')
       document.querySelector('footer')?.classList.add('md:bottom-0')
     }
-  }, [])
+  }, [absolute])
 
   return (
     <footer className="footer p-6 flex flex-col relative mt-12 justify-center items-center bg-neutral text-neutral-content">
