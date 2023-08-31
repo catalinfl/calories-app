@@ -25,11 +25,8 @@ const Calc = () => {
     const calculateRef = useRef<HTMLDivElement | null>(null)
     
     const authSelector = useSelector((state: RootState) => state.authSlice)
-    
-    const info = authSelector
 
-    console.log(info)
-    
+
     
     const [toCalculate, setCalculate]  = useState<CalcProps>({
         age: undefined,
@@ -42,6 +39,7 @@ const Calc = () => {
     const [error, setError] = useState<Error>(null);
     const [showCalculate, setShowCalculate] = useState<boolean>(false)
     const [calories, setCalories] = useState<number>(0)
+
 
     const handleChange = (calculate: keyof CalcProps, e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         if ((calculate === "age" && e.target.value.length <= 2) || ((calculate === "weight" || calculate === "height") && e.target.value.length <= 3)) {
@@ -118,13 +116,13 @@ const Calc = () => {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (showCalculate && info.loggedIn) {
-            axios.put("http://localhost:3000/api/lists", { calories: calories, username: info.username })
+        if (showCalculate && authSelector.loggedIn) {
+            axios.put("http://localhost:3000/api/lists", { calories: calories, username: authSelector.username })
             .then(() => {
-                dispatch(login({...info, calories: calories}))
+                dispatch(login({...authSelector, calories: calories}))
             })
         }
-    }, [showCalculate, calories, info, dispatch])
+    }, [showCalculate, calories, authSelector, dispatch])
 
     useEffect(() => {
         calculateRef.current?.scrollTo()

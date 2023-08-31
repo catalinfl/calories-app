@@ -73,15 +73,23 @@ func GetFoodsBySearch(c *fiber.Ctx) error {
 	}
 
 	for _, product := range prod {
-		if strings.Contains(strings.ToLower(product.Name), strings.ToLower(name)) && len(strings.Split(product.Name, " ")) == 1 {
+		nameLower := strings.ToLower(name)
+		productNameLower := strings.ToLower(product.Name)
+
+		nameSegments := strings.Split(nameLower, "%20")
+		productNameSegments := strings.Split(productNameLower, " ")
+
+		if len(nameSegments) == 1 && strings.Contains(productNameLower, nameLower) {
 			results = append(results, product)
-		} else if strings.Contains(strings.ToLower(product.Name), strings.ToLower(name)) {
-			results = append(results, product)
+		} else if len(nameSegments) >= 2 && len(productNameSegments) >= 2 {
+			toSearch := fmt.Sprintf("%s %s", nameSegments[0], nameSegments[1])
+			if strings.Contains(productNameLower, toSearch) {
+				results = append(results, product)
+			}
 		}
 	}
-
 	jsonData, err := json.Marshal(results)
-	fmt.Println(results)
+
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "failed to marshal products data"})
 	}
@@ -119,3 +127,7 @@ func GetJSONFood() []ProductAPI {
 
 	return products
 }
+
+// func CreateList(c *fiber.Ctx) error {
+
+// }

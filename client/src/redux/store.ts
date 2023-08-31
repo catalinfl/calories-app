@@ -2,6 +2,7 @@ import storage from "redux-persist/lib/storage"
 import  { configureStore, combineReducers} from "@reduxjs/toolkit"
 import { persistReducer, persistStore } from "redux-persist"
 import authSlice from "./slices/authSlice"
+import listSlice from "./slices/listSlice"
 
 const persistConfig = {
     key: 'root',
@@ -9,7 +10,7 @@ const persistConfig = {
 }
 
 const rootReducer = combineReducers({
-    authSlice
+    authSlice, listSlice
 })
 
 const persistReducerAll = persistReducer(persistConfig, rootReducer)
