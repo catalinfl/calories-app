@@ -12,12 +12,13 @@ import Lists from './pages/Lists.tsx'
 import store, { persistor } from './redux/store'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
+import AllLists from './pages/AllLists.tsx'
 
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />
+    element: <App />,
   },
   {
     path: '/about',
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register />,
+  },
+  {
+    path: '/allLists',
+    element: <AllLists />
   }
 ])
 

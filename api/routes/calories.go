@@ -13,6 +13,8 @@ func Lists(api *fiber.App) {
 	})
 
 	router.Put("/", handlers.CalculateCalories)
-	// router.Post("/", handlers.CreateList)
+	router.Post("/", handlers.CreateList)
+	router.Get("/:username", handlers.GetAllLists)
+	router.Delete("/:username/:listname", handlers.DeleteList)
 	router.Get("/foods/:name", handlers.GetFoodsBySearch)
 }

@@ -1,4 +1,4 @@
-import Calc from "../components/CalculatorComponents/Calc"
+import Calc from "../components/Calc"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 

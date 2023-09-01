@@ -1,5 +1,5 @@
 import Footer from '../components/Footer'
-import ListsComponents from '../components/ListsComponents/ListsComponents'
+import ListsComponents from '../components/ListsComponents'
 import Navbar from '../components/Navbar'
 
 const Lists = () => {

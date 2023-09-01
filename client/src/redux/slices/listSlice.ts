@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { List } from "../../components/ListsComponents/ListsComponents";
+import { List } from "../../components/ListsComponents";
 
 const initialState: List = {
     listName: "",
@@ -18,7 +18,7 @@ export const listSlice = createSlice({
                 ...action.payload
             }
         },
-        changeNickname: (state: List, action: PayloadAction<List>) => {
+        changeNickname: (state: List, action: PayloadAction<{ listName: string }>) => {
             state.listName = action.payload.listName
         },
     }

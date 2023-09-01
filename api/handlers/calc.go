@@ -9,6 +9,7 @@ import (
 	"github.com/catalinfl/calories-app/database"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Food struct {
@@ -16,14 +17,23 @@ type Food struct {
 }
 
 type ProductAPI struct {
-	Name     string `json:"name"`
-	Calories string `json:"calories"`
-	Quantity string `json:"quantity"`
+	Name                string  `json:"name"`
+	Calories            string  `json:"calories"`
+	Quantity            string  `json:"quantity"`
+	CaloriesPerQuantity float32 `json:"caloriesPerQuantity"`
+	Grams               float32 `json:"grams"`
 }
 
 type CaloriesRequest struct {
-	Username string `json:"username"`
-	Calories int32  `json:"calories"`
+	Username string  `json:"username"`
+	Calories float32 `json:"calories"`
+}
+
+type PostList struct {
+	Listname      string       `json:"listname"`
+	Products      []ProductAPI `json:"products"`
+	FinalCalories float32      `json:"finalCalories"`
+	Username      string       `json:"username"`
 }
 
 func CalculateCalories(c *fiber.Ctx) error {
@@ -59,7 +69,7 @@ func CalculateCalories(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "something went wrong updating the calories"})
 	}
 
-	return c.Status(200).JSON(fiber.Map{"message": fmt.Sprintf("Calories updated to %d", req.Calories)})
+	return c.Status(200).JSON(fiber.Map{"message": fmt.Sprintf("Calories updated to %f", req.Calories)})
 }
 
 func GetFoodsBySearch(c *fiber.Ctx) error {
@@ -128,6 +138,77 @@ func GetJSONFood() []ProductAPI {
 	return products
 }
 
-// func CreateList(c *fiber.Ctx) error {
+func CreateList(c *fiber.Ctx) error {
+	req := new(PostList)
+	c.BodyParser(&req)
+	user := req.Username
 
-// }
+	if user == "" {
+		return c.Status(400).JSON(fiber.Map{"error": "invalid body request"})
+	}
+
+	collection := database.GetClientDB().Database("calories-app").Collection("users")
+
+	collection.UpdateOne(c.Context(), bson.M{"username": user}, bson.M{"$push": bson.M{"lists": bson.M{"listname": req.Listname, "products": req.Products, "finalCalories": req.FinalCalories}}})
+
+	return c.Status(200).JSON(fiber.Map{"message": "List created"})
+}
+
+func GetAllLists(c *fiber.Ctx) error {
+	username := c.Params("username")
+
+	if username == "" {
+		return c.Status(400).JSON(fiber.Map{"error": "invalid body request"})
+	}
+
+	collection := database.GetClientDB().Database("calories-app").Collection("users")
+
+	filter := bson.M{"username": username}
+
+	var user bson.M
+
+	err := collection.FindOne(c.Context(), filter).Decode(&user)
+
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "something went wrong"})
+	}
+
+	return c.Status(200).JSON(user["lists"])
+}
+
+func DeleteList(c *fiber.Ctx) error {
+	username := c.Params("username")
+	listname := c.Params("listname")
+
+	if username == "" || listname == "" {
+		return c.Status(400).JSON(fiber.Map{"error": "invalid body request"})
+	}
+
+	splitListname := strings.Split(listname, "%20")
+	listname = strings.Join(splitListname, " ")
+
+	collection := database.GetClientDB().Database("calories-app").Collection("users")
+
+	user := bson.M{}
+
+	collection.FindOne(c.Context(), bson.M{"username": username}).Decode(&user)
+
+	lists := user["lists"]
+
+	var isFound bool = false
+	for i, list := range lists.(primitive.A) {
+		if list.(primitive.M)["listname"] == listname {
+			lists = append(lists.(primitive.A)[:i], lists.(primitive.A)[i+1:]...)
+			isFound = true
+			break
+		}
+	}
+
+	if !isFound {
+		return c.Status(400).JSON(fiber.Map{"error": "list not found"})
+	}
+
+	collection.UpdateOne(c.Context(), bson.M{"username": username}, bson.M{"$set": bson.M{"lists": lists}})
+
+	return c.Status(200).JSON(fiber.Map{"message": "list deleted"})
+}

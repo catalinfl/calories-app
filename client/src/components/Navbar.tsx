@@ -47,7 +47,7 @@ const Navbar = () => {
             </div>
             <div className="dropdown dropdown-end block sm:hidden">
                 <label tabIndex={0} className="btn m-1 bg-black border-none"> <RxHamburgerMenu className="p-2 w-[2.5rem] h-[2.5rem] text-lg cursor-pointer  text-lime-500 bg-purple-700" /> </label>
-                <ul tabIndex={0} className="dropdown-content text-center text-lg text-lime-500 z-[1] menu p-2 shadow bg-purple-700 rounded-lg w-52">
+                <ul tabIndex={0} className="dropdown-content z-50 text-center text-lg text-lime-500 menu p-2 shadow bg-purple-700 rounded-lg w-52">
                     <Link to="/"> <li className="cursor-pointer hover:bg-purple-800 transition-all px-4"> Home </li> </Link>
                     <Link to="/calculator"> <li className="cursor-pointer hover:bg-purple-800 transition-all px-4"> Calculator </li> </Link>
                     <Link to="/lists"> <li className="cursor-pointer hover:bg-purple-800 transition-all px-4"> Lists </li> </Link>

@@ -4,15 +4,16 @@ import { GrAddCircle } from "react-icons/gr"
 import { AiOutlineCloseCircle } from "react-icons/ai"
 import { TbMeat } from "react-icons/tb"
 import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "../../redux/store"
+import { RootState } from "../redux/store"
 import { Link } from "react-router-dom"
-import { addProduct } from "../../redux/slices/listSlice"
+import { addProduct, changeNickname } from "../redux/slices/listSlice"
 
-type Products = {
+export type Products = {
   name: string,
   calories: string,
   quantity: string,
-  caloriesPerQuantity: number
+  caloriesPerQuantity: number,
+  grams: number
 }
 
 export type ProductsWithoutQuantity = Omit<Products, "quantity">
@@ -28,7 +29,6 @@ type Error = string
 
 const ListsComponents = () => {
 
-
   const [products, setProducts] = useState<Products[]>([])
   const [error, setError] = useState<Error | null>("")
   const [listToSend, setListToSend] = useState<List>({
@@ -38,12 +38,10 @@ const ListsComponents = () => {
     username: ""
   })
 
-
-
-
   const [searchbar, setSearchbar] = useState<string>("")
+  const [listFinished, setListFinished] = useState<boolean>(false)
 
-
+  const listNameRef = useRef<HTMLInputElement>(null)
   const searchRef = useRef<HTMLDivElement>(null)
   const authState = useSelector((state: RootState) => state.authSlice)
   const listState = useSelector((state: RootState) => state.listSlice)
@@ -62,9 +60,10 @@ const ListsComponents = () => {
   }, [searchbar])
 
   const handleList = (product: Products) => {
-      setListToSend({...listToSend, username: authState.username, products: [...listToSend.products, {...product, caloriesPerQuantity: Math.floor(parseInt(product.calories.split(" ")[0]))}],})
+      setListToSend({...listToSend, username: authState.username, products: [...listToSend.products, {...product, caloriesPerQuantity: Number(product.calories.split(" ")[0]), grams: 100}]})
   }
 
+  console.log(listToSend.products)
 
   useEffect(() => {
     dispatch(addProduct(listToSend))
@@ -135,46 +134,63 @@ const ListsComponents = () => {
       );
       return;
     }
-    axios.post("http://localhost:3000/api/lists", listToSend, { 
-      withCredentials: true,
-    })
+
+
+    axios.post("http://localhost:3000/api/lists", listToSend)
+            .then(res => console.log(res))
+
+    setListToSend({...listToSend, listName: "", products: [], finalCalories: 0})
+    window.scrollTo(0, 0)
+    setListFinished(true)
   };
 
   useEffect(() => {
     if (listToSend.finalCalories === 0 && listToSend.products.length === 0) {
-      setListToSend({...listToSend, username: authState.username})
+      setListToSend({...listState, username: authState.username})
     }
+ 
   }, [])
 
+  useEffect(() => {
+    if (listNameRef.current !== null && listToSend.listName.length !== 0) {
+      listNameRef.current.value = listToSend.listName
+    } 
+  }, [listToSend])
+
+  console.log(listToSend)
 
   return (
-    <> 
     <div className="bg-black mt-16 py-12 rounded-lg max-w-[1280px] mx-auto w-full text-center">  
     <div className="flex flex-col gap-y-4 justify-center items-center ">
     {authState.loggedIn ? 
     <> 
-    <p className="mt-4"> Currently, you need {authState.calories} calories for a day to maintain your weight. </p> 
+    {listFinished ? <p className="bg-purple-500 p-4 text-3xl"> List successfully added </p> : null}
+    <p className="mt-4 block text-sm sm:text-lg w-auto h-auto"> You need {authState.calories} calories to consume for a day to maintain your weight. </p> 
+    <Link to="/allLists"> 
     <button className="btn rounded-none bg-lime-500 text-slate-700 hover:text-slate-400"> See your lists </button>
+    </Link>
     </>
     :
     <p> You aren't logged in. Log-in to see information and make a list. </p>
     }
     </div>
+    <> 
     <div className="flex flex-col mt-8 justify-center items-center">
       <p className="text-[1.25rem]"> Create a list or a meal </p> 
     </div>
     <div className="flex flex-row mt-3 justify-center items-center gap-x-8">
-        <div className="form-control w-full max-w-lg">
+        <div className="form-control w-full max-w-sm mx-auto sm:max-w-xl">
         <label className="label"> 
         <span className="label-text-alt"> Name of list </span>
         </label>
-        <input className="input rounded-0 w-full border" placeholder="List name" onChange={(e: ChangeEvent<HTMLInputElement>) => {
+        <input className="input rounded-0 w-full border" ref={listNameRef} placeholder="List name" onChange={(e: ChangeEvent<HTMLInputElement>) => {
           setListToSend({...listToSend, listName: e.target.value })
+          dispatch(changeNickname({ listName: e.target.value }))
         }}/>
         </div>
       </div>
-      <div className="flex flex-col p-12 max-w-sm mx-auto mt-12 mb-12 justify-center items-center gap-x-8 bg-base-100 rounded-lg">
-        <div className="flex bg-base-100">
+      <div className="flex flex-col p-12 max-w-sm mx-auto mt-12 mb-12 justify-center items-center gap-x-8 bg-base-100 rounded-lg sm:max-w-xl">
+        <div className="flex bg-base-100 max-w-sm mx-auto sm:max-w-xl">
           <div className="form-control w-full max-w-lg">
           <label className="label"> 
           <span className="label-text-alt"> Food name </span>
@@ -214,7 +230,7 @@ const ListsComponents = () => {
                         if (e.target.value.length > 3) {
                           const newProducts = listToSend.products.map((p, i) => {
                             if (i === index) {
-                              return { ...p, caloriesPerQuantity: Math.floor(parseInt(product.calories.split(" ")[0]))}
+                              return { ...p, caloriesPerQuantity: Math.floor(parseInt(product.calories.split(" ")[0])), grams: 100 }
                             } else {
                               return p
                             }
@@ -226,7 +242,7 @@ const ListsComponents = () => {
                         const newProducts = listToSend.products.map((p, i) => {
                           if (i === index) {
                             const caloriesPerQuantity = Number(e.target.value) * Number(product.calories.split(" ")[0]) / 100
-                            return { ...p, caloriesPerQuantity }
+                            return { ...p, caloriesPerQuantity, grams: Number(e.target.value) }
                           } else {
                             return p
                           }
@@ -252,7 +268,7 @@ const ListsComponents = () => {
           }
           <div className="mt-12">
             <div className="flex">
-            <p className="text-[2rem] gap-x-2 flex w-full sm:justify-center items-center">Total calories: {listToSend.finalCalories} <TbMeat className="text-[2.5rem] text-orange-800"/> </p>
+            <p className="text-[2rem] gap-x-2 flex w-full justify-center sm:justify-end items-center">Total calories: {listToSend.finalCalories} <TbMeat className="text-[2.5rem] text-orange-800"/> </p>
             </div>
             {error !== "" && error !== null ? (
               <p className="my-4 p-4 bg-purple-700"> Error: {error.split(" ")[0] === "You" ? 
@@ -264,8 +280,8 @@ const ListsComponents = () => {
             <button type="button" className="mt-4 btn bg-lime-500 text-slate-700" onClick={() => handleSubmit()}> Create a list </button>
           </div>
        </div>}
+       </>
     </div>
-  </>
   )
 }
 

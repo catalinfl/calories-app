@@ -3,8 +3,8 @@ import { ChangeEvent, useEffect, useRef, useState } from "react"
 import { BiErrorAlt } from "react-icons/bi"
 import { TbMeat } from "react-icons/tb"
 import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "../../redux/store"
-import { login } from "../../redux/slices/authSlice"
+import { RootState } from "../redux/store"
+import { login } from "../redux/slices/authSlice"
 
 type CalcProps = {
     age: number,

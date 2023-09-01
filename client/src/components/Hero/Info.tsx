@@ -42,7 +42,7 @@ const Info = () => {
             <IoFastFoodOutline className="inline-block w-8 h-8 stroke-current" />
             </div>
             <div className="stat-title"> Foods </div>
-            <div className="stat-value" ref={countRef}> <CountUp delay={1} start={99} end={500} duration={4} onEnd={() => setPlus(countRef)} /></div>
+            <div className="stat-value" ref={countRef}> <CountUp delay={1} start={99} end={2500} duration={4} onEnd={() => setPlus(countRef)} /></div>
             <div className="stat-desc"> you want to eat </div>
         </div>
         
@@ -58,7 +58,7 @@ const Info = () => {
             <div className="stat-figure text-lime-300">
             <MdOutlineFoodBank className="inline-block w-8 h-8 stroke-current" />
             </div>
-            <div className="stat-title">Meals </div>
+            <div className="stat-title">Meals & lists of food </div>
             <div className="stat-value" ref={countRef3}> <CountUp delay={1} start={0} end={100} duration={3} onEnd={() => setPlus(countRef3)} /> </div>
             <div className="stat-desc"> made with our site </div>
             </div>
